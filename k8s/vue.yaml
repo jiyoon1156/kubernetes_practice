@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vue-service
+spec:
+  selector:
+    app: vue
+  ports:
+    - port: 8080
+      name: vue
+      targetPort: 8080
+      # nodePort: 30000
+  type: LoadBalancer
+  # type: NodePort
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vue-deployment
+  labels:
+    app: vue
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vue
+  template:
+    metadata:
+      name: vue-pod
+      labels:
+        app: vue
+    spec:
+      containers:
+        - name: vue-container
+          image: vue_img
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+              name: vue
